@@ -41,6 +41,6 @@ public class Particle
     }
     public void Display(SpriteBatch draw)
     {
-        draw.Draw(_img, position, null, particleColor, 0f, Vector2.Zero, size*0.3f, SpriteEffects.None, 0f);
+        draw.Draw(_img, position, null, particleColor, 0f, Vector2.Zero, size*0.005f, SpriteEffects.None, 0f);
     }
 }

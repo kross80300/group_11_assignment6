@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -42,13 +43,14 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         particleTexture = Content.Load<Texture2D>("black_spot");
-    Galaxy ga = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50, new Color(0.8f, 0.7f, 0.6f));
-    ga.AddParticle(random.Next(200, 600), random);
-    galaxies.Add(ga);
-    Galaxy gb = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50, new Color(0.8f, 0.7f, 0.6f));
-    gb.AddParticle(random.Next(200, 600), random);
-    galaxies.Add(gb);
-
+        
+        Galaxy ga = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50 + 10, new Color(0.8f, 0.7f, 0.6f));
+        ga.AddParticle(random.Next(200, 600), random, particleTexture);
+        galaxies.Add(ga);
+        
+        Galaxy gb = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50 + 10, new Color(0.8f, 0.7f, 0.6f));
+        gb.AddParticle(random.Next(200, 600), random, particleTexture);
+        galaxies.Add(gb);
     }
 
     protected override void Update(GameTime gameTime)
@@ -60,24 +62,23 @@ public class Game1 : Game
         if (m.X >= 0 && m.X < _width && m.Y >= 0 && m.Y < _height && m.LeftButton == ButtonState.Pressed
          && last.LeftButton == ButtonState.Released)
         {
-            Galaxy ng = new Galaxy(new Vector2(m.X, m.Y), (float)random.NextDouble() * 50, new Color(0.8f, 0.7f, 0.6f));
-            ng.AddParticle(random.Next(200, 600), random);
+            Galaxy ng = new Galaxy(new Vector2(m.X, m.Y), (float)random.NextDouble() * 50 + 10, new Color(0.8f, 0.7f, 0.6f));
+            ng.AddParticle(random.Next(200, 600), random, particleTexture);
             galaxies.Add(ng);
         }
         last = m;
+        
         foreach (Galaxy g in galaxies)
         {
             g.Update();
         }
-
-
 
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Black);
+        GraphicsDevice.Clear(Color.White);
 
         _spriteBatch.Begin();
         foreach (Galaxy g in galaxies)

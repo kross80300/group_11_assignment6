@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Xml.Schema;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace group_11_assignment6;
 
 public class Galaxy
 {
-   private List<Particle> particles;
+   private List<project6.Particle> particles;
    private Vector2 position;
    private float mass;
    private Color galaxyColor;
@@ -17,7 +15,7 @@ public class Galaxy
 
    public Galaxy(Vector2 position, float mass, Color galaxyColor)
    {
-      this.particles = new List<Particle>();
+      this.particles = new List<project6.Particle>();
       this.position = position;
       this.mass = mass;
       this.galaxyColor = galaxyColor;
@@ -26,11 +24,11 @@ public class Galaxy
    public Vector2 Position => position;
    public float Mass => mass;
    public Color GalaxyColor => galaxyColor;
-   public List<Particle> Particles => particles;
+   public List<project6.Particle> Particles => particles;
 
-   public void Update();
+   public void Update()
    {
-      foreach (Particle particle in particles)
+      foreach (project6.Particle particle in particles)
       {
          particle.Update();
       }
@@ -38,33 +36,33 @@ public class Galaxy
 
    public void Display(SpriteBatch spriteBatch, Texture2D particleTexture)
    {
-      foreach (Particle particle in particles)
+      foreach (project6.Particle particle in particles)
       {
-         particle.Display(spriteBatch, particleTexture);
+         particle.Display(spriteBatch);
       }
    }
 
    public void ApplyGravity()
    {
-      foreach (Particle particle in particles)
+      foreach (project6.Particle particle in particles)
       {
-         Vector2 direction = position - particle.Position;
+         Vector2 direction = position - particle.position;
          float distance = direction.Length();
 
          distance = Math.Max(distance, 5f);
          
          direction.Normalize();
          
-         float forceMagnitude = (mass * particle.Mass) / (distance * distance);
+         float forceMagnitude = (mass * particle.mass) / (distance * distance);
 
          forceMagnitude *= 0.1f;
          
-         direction *= forceMagnitude;
-         particle.ApplyForce(direction);
+         Vector2 force = direction * forceMagnitude;
+         particle.ApplyForces(force.X, force.Y);
       }
    }
 
-   public void AddParticle(int count, Random random)
+   public void AddParticle(int count, Random random, Texture2D particleTexture)
    {
       for (int i = 0; i < count; i++)
       {
@@ -73,17 +71,12 @@ public class Galaxy
          
          float x = position.X + (float)Math.Cos(angle) * distance;
          float y = position.Y + (float)Math.Sin(angle) * distance;
-            
-         Vector2 particlePosition = new Vector2(x, y);
          
          float speed = (float)Math.Sqrt(mass / distance) * 2f;
-         Vector2 velocity = new Vector2(
-            -(float)Math.Sin(angle) * speed,
-            (float)Math.Cos(angle) * speed
-         );
+         float vx = -(float)Math.Sin(angle) * speed;
+         float vy = (float)Math.Cos(angle) * speed;
          
-         float particleMass = (float)(random.NextDouble() * 2 + 0.5f);
-         Particle particle = new Particle(particlePosition, velocity, particleMass, galaxyColor);
+         project6.Particle particle = new project6.Particle(particleTexture, x, y, vx, vy, galaxyColor);
             
          particles.Add(particle);
       }
