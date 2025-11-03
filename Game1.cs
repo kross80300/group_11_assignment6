@@ -77,7 +77,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Black);
+        GraphicsDevice.Clear(Color.Gray);
 
         _spriteBatch.Begin();
         foreach (Galaxy g in galaxies)
