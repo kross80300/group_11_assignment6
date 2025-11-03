@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -8,6 +10,13 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private int _height = 800;
+    private int _width = 1200;
+    Random random = new Random();
+    private List<Galaxy> galaxies;
+    private Texture2D particleTexture;
+    private MouseState last;
+    
 
     public Game1()
     {
@@ -18,7 +27,12 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
+        _graphics.PreferredBackBufferHeight = _height;
+        _graphics.PreferredBackBufferWidth = _width;
+        _graphics.ApplyChanges();
+
+        galaxies = new List<Galaxy>();
+        random = new Random();
 
         base.Initialize();
     }
@@ -27,25 +41,50 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
+        particleTexture = Content.Load<Texture2D>("black_spot");
+    Galaxy ga = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50, new Color(0.8f, 0.7f, 0.6f));
+    ga.AddParticle(random.Next(200, 600), random);
+    galaxies.Add(ga);
+    Galaxy gb = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50, new Color(0.8f, 0.7f, 0.6f));
+    gb.AddParticle(random.Next(200, 600), random);
+    galaxies.Add(gb);
+
     }
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        MouseState m = Mouse.GetState();
+        if (m.X >= 0 && m.X < _width && m.Y >= 0 && m.Y < _height && m.LeftButton == ButtonState.Pressed
+         && last.LeftButton == ButtonState.Released)
+        {
+            Galaxy ng = new Galaxy(new Vector2(m.X, m.Y), (float)random.NextDouble() * 50, new Color(0.8f, 0.7f, 0.6f));
+            ng.AddParticle(random.Next(200, 600), random);
+            galaxies.Add(ng);
+        }
+        last = m;
+        foreach (Galaxy g in galaxies)
+        {
+            g.Update();
+        }
+
+
 
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.Black);
 
-        // TODO: Add your drawing code here
+        _spriteBatch.Begin();
+        foreach (Galaxy g in galaxies)
+        {
+            g.Display(_spriteBatch, particleTexture);
+        }
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
