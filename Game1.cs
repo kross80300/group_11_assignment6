@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -42,13 +41,13 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        particleTexture = Content.Load<Texture2D>("black_spot");
+        particleTexture = Content.Load<Texture2D>("white_spot");
         
-        Galaxy ga = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50 + 10, new Color(0.8f, 0.7f, 0.6f));
+        Galaxy ga = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50 + 10, GetRandomGalaxyColor());
         ga.AddParticle(random.Next(200, 600), random, particleTexture);
         galaxies.Add(ga);
         
-        Galaxy gb = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50 + 10, new Color(0.8f, 0.7f, 0.6f));
+        Galaxy gb = new Galaxy(new Vector2(random.Next(100, _width - 100), random.Next(50, _height - 50)), (float)random.NextDouble() * 50 + 10, GetRandomGalaxyColor());
         gb.AddParticle(random.Next(200, 600), random, particleTexture);
         galaxies.Add(gb);
     }
@@ -62,7 +61,7 @@ public class Game1 : Game
         if (m.X >= 0 && m.X < _width && m.Y >= 0 && m.Y < _height && m.LeftButton == ButtonState.Pressed
          && last.LeftButton == ButtonState.Released)
         {
-            Galaxy ng = new Galaxy(new Vector2(m.X, m.Y), (float)random.NextDouble() * 50 + 10, new Color(0.8f, 0.7f, 0.6f));
+            Galaxy ng = new Galaxy(new Vector2(m.X, m.Y), (float)random.NextDouble() * 50 + 10, GetRandomGalaxyColor());
             ng.AddParticle(random.Next(200, 600), random, particleTexture);
             galaxies.Add(ng);
         }
@@ -78,7 +77,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.White);
+        GraphicsDevice.Clear(Color.Black);
 
         _spriteBatch.Begin();
         foreach (Galaxy g in galaxies)
@@ -88,5 +87,22 @@ public class Game1 : Game
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private Color GetRandomGalaxyColor()
+    {
+        Color[] galaxyColors = new Color[]
+        {
+            new Color(100, 150, 255),   
+            new Color(255, 100, 150),   
+            new Color(150, 255, 150),   
+            new Color(255, 200, 100),   
+            new Color(200, 100, 255),   
+            new Color(100, 255, 255),  
+            new Color(255, 255, 100), 
+            new Color(255, 150, 200) 
+        };
+        
+        return galaxyColors[random.Next(galaxyColors.Length)];
     }
 }
